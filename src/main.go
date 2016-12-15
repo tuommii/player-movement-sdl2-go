@@ -52,7 +52,11 @@ func main() {
 	perror(err)
 	defer rend.Destroy()
 
-	// Game loop, events update, render
+	// Load resources
+	LoadTexture("assets/george.png", "player", rend)
+	TextureMapInfo()
+
+	// Game loop
 	for isRunning {
 
 		frameStartTime := sdl.GetTicks()
@@ -69,6 +73,9 @@ func main() {
 				OnKeyUp(event)
 			}
 		}
+
+		// Update
+		// Render
 
 		// If too fast add delay
 		frameTime := sdl.GetTicks() - frameStartTime

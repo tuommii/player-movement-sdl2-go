@@ -13,18 +13,18 @@ type GameObject interface {
 
 // Gobject represents game object
 type Gobject struct {
-	// Key for possible mapping
+	// Image filename
+	filename string
+	// Key for mapping
 	id string
 	// Position
 	x, y int32
 	// Movement speed
 	speed int32
-	// Frame/Sprite size, not full image size
+	// Sprite size, not full image size
 	width, height int32
 	// For animation
-	fromX, fromY, framesX, framesY, currentFrame int32
-	// Spritesheet or image filename
-	filename string
+	fromX, fromY, framesX, framesY, currentFrame, currentRow int32
 	// Holds image
 	texture *sdl.Texture
 	// Part of the spritesheet
@@ -36,7 +36,7 @@ type Gobject struct {
 }
 
 // NewGobject creates new game object
-func NewGobject(r *sdl.Renderer, file string, x, y, framesX, framesY int32) *Gobject {
+func NewGobject(r *sdl.Renderer, file, id string, x, y, framesX, framesY int32) *Gobject {
 	gob := &Gobject{filename: file, x: x, y: y, framesX: framesX, framesY: framesY, speed: 1, currentFrame: 0}
 	gob.Load(r)
 	return gob
