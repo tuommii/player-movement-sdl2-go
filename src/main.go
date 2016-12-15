@@ -6,7 +6,7 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-// Window size
+// Global consts
 const (
 	FPS          uint32 = 60
 	DelayTime    uint32 = uint32(1000.0 / FPS)
@@ -15,13 +15,15 @@ const (
 	WindowTitle         = "Game"
 )
 
-// Globals
+// Globals, maybe someday wrapped to struct but now less to type
 var (
 	win       *sdl.Window
 	rend      *sdl.Renderer
 	event     sdl.Event
 	err       error
 	isRunning = true
+	// Maybe later
+	gameObjects map[string]*Gobject
 )
 
 // Error checker
@@ -52,9 +54,11 @@ func main() {
 	perror(err)
 	defer rend.Destroy()
 
-	// Load resources
-	LoadTexture("assets/george.png", "player", rend)
-	TextureMapInfo()
+	// Create player
+	player := NewGobject(rend, "assets/george.png", "player", 10, 10, 4, 4)
+	// Init gameObjects map
+	gameObjects = make(map[string]*Gobject)
+	gameObjects[player.id] = player
 
 	// Game loop
 	for isRunning {
@@ -68,14 +72,23 @@ func main() {
 				fmt.Println(t)
 				isRunning = false
 			case *sdl.KeyDownEvent:
-				OnKeyDown(event)
+				// OnKeyDown(event)
 			case *sdl.KeyUpEvent:
-				OnKeyUp(event)
+				// OnKeyUp(event)
 			}
 		}
 
+		// Clear screen
+		rend.SetDrawColor(0, 255, 0, 255)
+		rend.Clear()
+
 		// Update
+		player.Update()
+
 		// Render
+		player.Draw(rend)
+
+		rend.Present()
 
 		// If too fast add delay
 		frameTime := sdl.GetTicks() - frameStartTime

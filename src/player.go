@@ -54,15 +54,8 @@ func (p *Gobject) Draw(r *sdl.Renderer) {
 
 	// Part of the spritesheet
 	p.src = sdl.Rect{X: p.fromX, Y: p.fromY, W: p.width, H: p.height}
-
 	// Part of the screen where to draw
 	p.dest = sdl.Rect{X: p.x, Y: p.y, W: p.width, H: p.height}
 
-	r.Clear()
-	r.SetDrawColor(0, 0, 0, 255)
-
-	r.FillRect(&sdl.Rect{X: 0, Y: 0, W: int32(WindowWidth), H: int32(WindowHeight)})
-
 	r.Copy(p.texture, &p.src, &p.dest)
-	r.Present()
 }
