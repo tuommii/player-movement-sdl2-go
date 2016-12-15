@@ -24,7 +24,7 @@ type Gobject struct {
 	// Sprite size, not full image size
 	width, height int32
 	// For animation
-	fromX, fromY, framesX, framesY, currentFrame, currentRow int32
+	fromX, fromY, framesX, framesY, currentFrame int32
 	// Holds image
 	texture *sdl.Texture
 	// Part of the spritesheet

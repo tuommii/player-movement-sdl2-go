@@ -71,10 +71,6 @@ func main() {
 			case *sdl.QuitEvent:
 				fmt.Println(t)
 				isRunning = false
-			case *sdl.KeyDownEvent:
-				// OnKeyDown(event)
-			case *sdl.KeyUpEvent:
-				// OnKeyUp(event)
 			}
 		}
 
@@ -98,5 +94,6 @@ func main() {
 
 	} // End of isRunning
 
+	player.Free()
 	sdl.Quit()
 }
