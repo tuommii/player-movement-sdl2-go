@@ -8,17 +8,20 @@ import (
 
 // Window size
 const (
-	WindowWidth  = 640
-	WindowHeight = 480
+	FPS          uint32 = 60
+	DelayTime    uint32 = uint32(1000.0 / FPS)
+	WindowWidth         = 640
+	WindowHeight        = 480
+	WindowTitle         = "Game"
 )
 
-// Globals. TODO: Maybe Game struct
+// Globals
 var (
 	win       *sdl.Window
 	rend      *sdl.Renderer
-	keyStates []uint8
+	event     sdl.Event
 	err       error
-	isRunning bool
+	isRunning = true
 )
 
 // Error checker
@@ -29,11 +32,12 @@ func perror(err error) {
 }
 
 func main() {
+	// Init SDL and create window
 	err = sdl.Init(sdl.INIT_VIDEO)
 	perror(err)
 
 	win, err = sdl.CreateWindow(
-		"Game",
+		WindowTitle,
 		sdl.WINDOWPOS_CENTERED,
 		sdl.WINDOWPOS_CENTERED,
 		WindowWidth,
@@ -43,37 +47,36 @@ func main() {
 	perror(err)
 	defer win.Destroy()
 
+	// Create renderer
 	rend, err = sdl.CreateRenderer(win, -1, sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
 	perror(err)
 	defer rend.Destroy()
 
-	// Create player
-	p1 := NewGobject(rend, "assets/george.png", 10, 10, 4, 4)
-	fmt.Printf("%+v", p1)
-
-	var event sdl.Event
-	isRunning = true
-
-	// Game loop
+	// Game loop, events update, render
 	for isRunning {
 
-		// ORDER IS: events, update, draw
+		frameStartTime := sdl.GetTicks()
 
+		// Handle event queue
 		for event = sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch t := event.(type) {
 			case *sdl.QuitEvent:
 				fmt.Println(t)
 				isRunning = false
+			case *sdl.KeyDownEvent:
+				OnKeyDown(event)
+			case *sdl.KeyUpEvent:
+				OnKeyUp(event)
 			}
 		}
 
-		p1.Update()
-		p1.Draw(rend)
-
-		sdl.Delay(16)
+		// If too fast add delay
+		frameTime := sdl.GetTicks() - frameStartTime
+		if frameTime < DelayTime {
+			sdl.Delay(uint32(DelayTime - frameTime))
+		}
 
 	} // End of isRunning
 
-	p1.Free()
 	sdl.Quit()
 }
